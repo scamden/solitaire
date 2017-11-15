@@ -16,13 +16,13 @@ fi
 case "$STAGE" in
  staging)
   CLOUDFRONT_DISTRIBUTION_IDS=$STAGING_CLOUDFRONT_DISTRIBUTION_IDS
-  BUCKET=$(BUCKET_PREFIX).staging.creditiq.com
-  DEMO_BUCKET=demo-$(BUCKET_PREFIX).staging.creditiq.com
+  BUCKET=$BUCKET_PREFIX.staging.creditiq.com
+  DEMO_BUCKET=demo-$BUCKET_PREFIX.staging.creditiq.com
   ;;
  prod)
   CLOUDFRONT_DISTRIBUTION_IDS=$PROD_CLOUDFRONT_DISTRIBUTION_IDS
-  BUCKET=$(BUCKET_PREFIX).creditiq.com
-  DEMO_BUCKET=demo-$(BUCKET_PREFIX).creditiq.com
+  BUCKET=$BUCKET_PREFIX.creditiq.com
+  DEMO_BUCKET=demo-$BUCKET_PREFIX.creditiq.com
   ;;
 esac
 
