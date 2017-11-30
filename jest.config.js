@@ -21,5 +21,6 @@ module.exports = {
   ],
   moduleNameMapper: moduleNameMapper,
   watchPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  setupFiles: ['./jest-setup.js'],
+  setupFiles: ['./jest-setup.ts'],
+  setupTestFrameworkScriptFile: './jest-post-setup.ts',
 };
