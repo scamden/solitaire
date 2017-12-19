@@ -1,10 +1,11 @@
 import { Dispatch } from 'redux';
+import { Action } from 'typescript-fsa';
 
-import { create, createApplicationThunks, IApi, IBasicApplication } from '@creditiq/console-state';
+import { create, createRootThunks, IApi, IBasicApplication } from '@creditiq/console-state';
 
 export const api: IApi = create(__MOCK_DATA__);
 
-export const thunks = createApplicationThunks(api);
+export const thunks = createRootThunks(api, (s) => s);
 
 export { rootSelectors } from '@creditiq/console-state';
 
