@@ -106,6 +106,7 @@
     "tslint-language-service": "^0.9.6",
     "tslint-react": "^3.0.0",
     "typescript": "^2.3.4",
+    "typescript-fsa": "^2.5.0",
     "typings-for-css-modules-loader": "^1.6.1",
     "validate-commit-msg": "^2.14.0",
     "watch": "^1.0.2",
