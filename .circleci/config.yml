@@ -1,0 +1,65 @@
+version: 2
+
+references:
+  - &working_directory ~/base
+  - &container_config
+      working_directory: *working_directory
+      docker:
+        - image: circleci/node:6.10.3
+  - &set_global_npm_permissions
+      name: Set global npm permissions
+      command: sudo chown -R $(whoami):$(id -g) /usr/local
+  - &restore_cache
+      keys:
+        - v1-dep-{{ .Branch }}-
+        - v1-dep-master-
+        - v1-dep-
+        
+jobs:
+  build:
+    <<: *container_config
+    steps:
+      - checkout
+      - run: *set_global_npm_permissions
+      - restore_cache: *restore_cache
+      - run:
+          name: Update npm
+          command: npm install -g npm@5
+      - run:
+          name: Install dependencies
+          command: |
+            cp .circleci/.npmrc .npmrc
+            npm install
+      - run:
+          name: Run tests
+          command: npm test
+      - save_cache:
+          key: v1-dep-{{ .Branch }}-{{ epoch }}
+          paths:
+            - node_modules
+            - /usr/local/lib/node_modules # global dependencies
+
+  deploy:
+    <<: *container_config
+    steps:
+      - checkout
+      - run: *set_global_npm_permissions
+      - restore_cache: *restore_cache
+      - run:
+          name: Deploy
+          command: echo Deploy Command Placeholder
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          context: org-global
+      - deploy:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
