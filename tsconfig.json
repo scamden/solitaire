@@ -20,11 +20,15 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["./src/*"]
+      "@src/*": [
+        "./src/*"
+      ]
     },
-    "plugins": [{
-      "name": "tslint-language-service"
-    }]
+    "plugins": [
+      {
+        "name": "tslint-language-service"
+      }
+    ]
   },
   "compileOnSave": false,
   "include": [
