@@ -1,6 +1,7 @@
 *
 !dist/**/*
 !src/**/*
+__tests__
 *.spec.*
 *.test.*
 *.spec.d.ts
