@@ -1,7 +1,7 @@
 version: 2
 
 references:
-  - &working_directory ~/base
+  - &working_directory ~/web-base
   - &container_config
       working_directory: *working_directory
       docker:
