@@ -14,7 +14,7 @@ references:
         - v1-dep-{{ .Branch }}-
         - v1-dep-master-
         - v1-dep-
-        
+
 jobs:
   build:
     <<: *container_config
@@ -24,11 +24,15 @@ jobs:
       - restore_cache: *restore_cache
       - run:
           name: Update npm
-          command: npm install -g npm@5
+          command: >
+            npm -v | grep ^5 &&
+            echo npm is ready ||
+            (npm i -g npm3 && npm3 -g uninstall npm && npm3 i -g npm@5)
       - run:
           name: Install dependencies
           command: |
-            cp .circleci/.npmrc .npmrc
+            cp -f .circleci/.npmrc ~/.npmrc
+            cp -f .circleci/.npmrc .npmrc
             npm install
       - run:
           name: Run tests
