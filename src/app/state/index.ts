@@ -1,7 +1,6 @@
-import { Dispatch } from 'redux';
 import { Action } from 'typescript-fsa';
 
-import { create, createRootThunks, IApi, IBasicApplication } from '@creditiq/console-state';
+import { create, createRootThunks, Dispatch, IApi, IBasicApplication } from '@creditiq/console-state';
 
 export const api: IApi = create(__MOCK_DATA__);
 
