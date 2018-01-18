@@ -108,6 +108,7 @@
     "typescript": "^2.3.4",
     "typescript-fsa": "^2.5.0",
     "typings-for-css-modules-loader": "^1.6.1",
+    "url-loader": "^0.6.2",
     "validate-commit-msg": "^2.14.0",
     "watch": "^1.0.2",
     "webpack": "^3.6.0",
