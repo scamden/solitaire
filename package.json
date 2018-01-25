@@ -43,7 +43,7 @@
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@creditiq/console-state": "^4.3.0",
+    "@creditiq/console-state": "^4.6.2",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.5",
     "@types/enzyme-adapter-react-16": "^1.0.1",
