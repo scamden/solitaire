@@ -19,17 +19,14 @@ import * as yargs from 'yargs';
 
 console.log(chalkSuccess('Starting app in dev mode...'));
 
-const branchName = process.env.npm_package_config_build_branch; // ok if this is undefined
-const isOffline = !!yargs.parse(process.argv).offline;
-const isDemo = process.argv[2] === 'demo';
-const isStagingApi = process.argv[2] === 'staging';
-const isMockData = process.argv[2] !== 'api' && !isStagingApi;
+const parsedArgs = yargs.parse(process.argv);
+const isOffline = !!parsedArgs.offline;
+const isDemo = !!parsedArgs.demo;
+const apiStage = parsedArgs.apiStage;
 const config = createConfig({
   isDemo,
-  branchName,
   isDev: true,
-  isMockData,
-  isStagingApi,
+  apiStage,
   isOffline
 });
 const bundler = webpack(config);

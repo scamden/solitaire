@@ -22,10 +22,10 @@ console.log(chalkProcessing('Generating minified bundle for production via Webpa
 webpack([
   createConfig({
     isDemo: false,
-    branchName
+    apiStage: branchName
   }),
   createConfig({
     isDemo: true,
-    branchName
+    apiStage: branchName
   })
 ]).run(doneCallback);

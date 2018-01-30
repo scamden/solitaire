@@ -6,6 +6,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import * as path from 'path';
 
+const _capitalize = require('lodash/capitalize');
 
 import failPlugin from 'webpack-fail-plugin';
 import {
@@ -18,16 +19,60 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 const globalSassRegex = /(toastr)\.scss$/;
 const aliases = transformTsConfigPaths();
 
-export default (opts) => {
-  const isDemo = opts.isDemo;
-  const branchName = opts.branchName;
-  const isDev = opts.isDev || false;
-  const isMockData = opts.isMockData || false;
-  const isStagingApi = opts.isStagingApi || false;
-  const isOffline = opts.isOffline || false;
-  const isLibrary = opts.isLibrary || false;
+function getApiStageVariables(apiStage) {
+  switch (apiStage) {
+    case 'prod':
+      return {
+        __API_BASE_URL__: '"https://api.creditiq.com"',
+        __SOCKET_BASE_URL__: '"https://socket.creditiq.com"',
+        __SPLIT_API_KEY__: '"45kigfkjph2hipkm0p92l1si72og3ooov32j"',
+        __SENTRY_URL__: '"https://1cd04e434335429085e3ab6780e2b77a@sentry.io/148147"',
+        __NEW_RELIC_APP_ID__: '"51898835"',
+      }
+    case 'staging':
+      return {
+        __API_BASE_URL__: '"https://api.staging.creditiq.com"',
+        __SOCKET_BASE_URL__: '"https://socket.staging.creditiq.com"',
+        __SPLIT_API_KEY__: '"qrseg78md8q2go6gq37usd02s4cutptk07qn"',
+        __SENTRY_URL__: '"https://6f7ddaa1250d46c1bc523d538d6c2726@sentry.io/148097"',
+        __NEW_RELIC_APP_ID__: '"51902382"',
+      }
 
-  const useStagingUrls = !!isStagingApi || (!isDev && branchName !== 'prod');
+    case 'dev':
+      return {
+        __API_BASE_URL__: '"https://api.dev.creditiq.com"',
+        __SOCKET_BASE_URL__: '"https://socket.dev.creditiq.com"',
+        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+        __SENTRY_URL__: '""',
+        __NEW_RELIC_APP_ID__: '""',
+      }
+    case 'local':
+      return {
+        __API_BASE_URL__: '"http://localhost:3000"',
+        __SOCKET_BASE_URL__: '"http://localhost:8888"',
+        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+        __SENTRY_URL__: '""',
+        __NEW_RELIC_APP_ID__: '""',
+      }
+    default:
+      return {
+        __API_BASE_URL__: '""',
+        __SOCKET_BASE_URL__: '""',
+        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+        __SENTRY_URL__: '""',
+        __NEW_RELIC_APP_ID__: '""',
+      }
+  }
+}
+
+export default ({
+  isDev,
+  isDemo,
+  apiStage,
+  isOffline,
+  isLibrary
+}) => {
+
   const entry = [
     'whatwg-fetch',
     ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
@@ -52,6 +97,26 @@ export default (opts) => {
     sourceMapFilename: '[file].map'
   };
 
+  let __TITLE_ENV__ = '"';
+  if (isDev) {
+    __TITLE_ENV__ += ' - Dev';
+  }
+  if (isOffline) {
+    __TITLE_ENV__ += ' - Offline';
+  }
+  if (isDemo) {
+    __TITLE_ENV__ += ' - Demo';
+  }
+  if (!!apiStage) {
+    __TITLE_ENV__ += ` - ${_capitalize(apiStage)}`;
+    if (isDev) {
+      __TITLE_ENV__ += ' API';
+    }
+  }
+  __TITLE_ENV__ += '"';
+
+  const isProdNotDemo = apiStage === 'prod';
+
   const plugins = [
     // isDev && new BundleAnalyzerPlugin() ||  || (() => {}),
 
@@ -67,42 +132,17 @@ export default (opts) => {
 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'), // Tells React to build in either dev or prod modes. https://facebook.github.io/react/downloads.html (See bottom)
-      __MOCK_DATA__: !!(isDemo || isMockData),
+      __MOCK_DATA__: !!(isDemo || !apiStage),
       __DEMO__: !!isDemo,
       __DEV__: !!isDev,
-      __API_BASE_URL__: useStagingUrls ?
-        '"https://api.staging.creditiq.com"' :
-        (
-          isDev ?
-          '"http://localhost:3000"' :
-          '"https://api.creditiq.com"'
-        ),
-      __SOCKET_BASE_URL__: useStagingUrls ?
-        '"https://socket.staging.creditiq.com"' :
-        (
-          isDev ?
-          '"http://localhost:8888"' :
-          '"https://socket.creditiq.com"'
-        ),
-      __STRIPE_KEY__: (branchName === 'prod' && !isDemo) ?
-        '"pk_live_XNg1WHvwod1vdxnreJUO7o4y"' : '"pk_test_mwVRxa6S70EAv9uFNBYbNdml"',
-      __MIXPANEL_TOKEN__: (branchName === 'prod' && !isDemo) ?
-        '"96b1008525b5f67a1f7ccd6fbae8db70"' : '""',
       __USE_FULLSTORY__: !isDev,
-      __SPLIT_API_KEY__: branchName === 'prod' ?
-        '"45kigfkjph2hipkm0p92l1si72og3ooov32j"' : '"qrseg78md8q2go6gq37usd02s4cutptk07qn"',
-      __SENTRY_URL__: isDev ? '""' :
-        (
-          branchName === 'prod' ?
-          '"https://1cd04e434335429085e3ab6780e2b77a@sentry.io/148147"' :
-          '"https://6f7ddaa1250d46c1bc523d538d6c2726@sentry.io/148097"'
-        ),
-      __NEW_RELIC_APP_ID__: isDev ? '""' :
-        (branchName === 'prod' ? '"51898835"' : '"51902382"'),
-      __TITLE_ENV__: isDev ?
-        (`" - Dev${isOffline ? '- Offline' : ''}${isMockData ? isDemo ? ' - Demo' : '' : ` - ${isStagingApi ? 'Staging':'Local'} API`}"`) :
-        (`"${isDemo ? ' - Demo' : ''}${branchName !== 'prod' ? ` - ${branchName}` : ''}"`),
-      __OFFLINE_MODE__: !!(isDev && isOffline)
+      __OFFLINE_MODE__: !!(isDev && isOffline),
+      __TITLE_ENV__,
+      __STRIPE_KEY__: isProdNotDemo ?
+        '"pk_live_XNg1WHvwod1vdxnreJUO7o4y"' : '"pk_test_mwVRxa6S70EAv9uFNBYbNdml"',
+      __MIXPANEL_TOKEN__: isProdNotDemo ?
+        '"96b1008525b5f67a1f7ccd6fbae8db70"' : '""',
+      ...getApiStageVariables(apiStage)
     }),
 
     ...(isDev && [
