@@ -1,7 +1,7 @@
 version: 2
-
 references:
   - &working_directory ~/base
+  - &automerge_branch_pattern /^am\-.*/
   - &container_config
       working_directory: *working_directory
       docker:
@@ -51,7 +51,23 @@ jobs:
       - restore_cache: *restore_cache
       - run:
           name: Deploy
-          command: echo Deploy Command Placeholder
+          command: echo Deploy Command Placeholder      
+
+  automerge:
+    <<: *container_config
+    steps:
+      - checkout
+      - run:
+          name: Auto-Merge
+          command: |
+            git stash
+            git checkout dev
+            git reset --hard origin/dev
+            git checkout $CIRCLE_BRANCH
+            git stash pop || true
+            git fetch origin dev:dev
+            git fetch . $CIRCLE_BRANCH:dev  
+            git push origin dev
 
 workflows:
   version: 2
@@ -59,6 +75,17 @@ workflows:
     jobs:
       - build:
           context: org-global
+          filters:
+            branches:
+              only:
+                - master
+                - *automerge_branch_pattern
+      - automerge:
+          requires:
+            - build
+          filters:
+            branches:
+              only: *automerge_branch_pattern
       - deploy:
           context: org-global
           requires:
