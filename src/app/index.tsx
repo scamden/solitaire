@@ -9,7 +9,18 @@ import 'global.scss';
 
 import { api, rootSelectors, thunks } from './state';
 
+import { IDispatchProps, IStateProps, MainComponent } from '../lib';
 import { configureStore } from './store';
+
+const ConnectedTestComponent = connect<IStateProps, IDispatchProps, any>(
+  (state: any) => {
+    return {
+    };
+  },
+  {
+
+  }
+)(MainComponent);
 
 (async () => {
   await api.init({
@@ -20,7 +31,7 @@ import { configureStore } from './store';
   // dispatch any initial thunks here using store.dispatch(...)
   render(
     <Provider store={store}>
-      <div>Web Base (Your Connected Component Here)</div>
+      <ConnectedTestComponent />
     </Provider>,
     document.getElementById('app')
   );

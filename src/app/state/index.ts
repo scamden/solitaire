@@ -1,6 +1,6 @@
 import { Action } from 'typescript-fsa';
 
-import { create, createRootThunks, Dispatch, IApi, IPublicApplication } from '@creditiq/console-state';
+import { create, createRootThunks, Dispatch, IApi, IItem, IPublicApplication } from '@creditiq/console-state';
 
 export const api: IApi = create(__MOCK_DATA__);
 
