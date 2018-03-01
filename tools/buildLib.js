@@ -24,7 +24,6 @@ console.log(chalkProcessing('Generating minified bundle for production via Webpa
 
 const webpackInstance = webpack(
   createConfig({
-    isWatching: isWatchMode,
     demo: false,
     branchName,
     isLibrary: true

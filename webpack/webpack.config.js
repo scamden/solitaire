@@ -71,7 +71,6 @@ export default ({
   apiStage,
   isOffline,
   isLibrary,
-  isWatching,
 }) => {
   const entry = [
     'whatwg-fetch',
@@ -171,7 +170,7 @@ export default ({
       },
       inject: true
     }),
-    ...(!isDev && !isWatching && [
+    ...(!isDev && !isLibrary && [
 
       // Minify JS
       new webpack.optimize.UglifyJsPlugin({
