@@ -70,9 +70,9 @@ export default ({
   isDemo,
   apiStage,
   isOffline,
-  isLibrary
+  isLibrary,
+  isWatching,
 }) => {
-
   const entry = [
     'whatwg-fetch',
     ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
@@ -171,7 +171,7 @@ export default ({
       },
       inject: true
     }),
-    ...(!isDev && [
+    ...(!isDev && !isWatching && [
 
       // Minify JS
       new webpack.optimize.UglifyJsPlugin({
@@ -342,6 +342,7 @@ export default ({
     config.externals = {
       ...(isLibrary && {
         'react': 'commonjs react', // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
+        '@creditiq/item': 'commonjs @creditiq/item',
         'global.scss': 'commonjs global.scss',
         '_variables.scss': 'commonjs _variables.scss',
         '_mixins.scss': 'commonjs _mixins.scss',
