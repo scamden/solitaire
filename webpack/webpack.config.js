@@ -342,6 +342,7 @@ export default ({
       ...(isLibrary && {
         'react': 'commonjs react', // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
         '@creditiq/item': 'commonjs @creditiq/item',
+        '@creditiq/split-web-client': 'commonjs @creditiq/split-web-client',
         'global.scss': 'commonjs global.scss',
         '_variables.scss': 'commonjs _variables.scss',
         '_mixins.scss': 'commonjs _mixins.scss',
