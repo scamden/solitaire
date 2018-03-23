@@ -44,7 +44,7 @@
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@creditiq/console-state": "^8.0.0",
+    "@creditiq/console-state": "^8.1.0",
     "@creditiq/item": "^8.0.0",
     "@creditiq/search": "^1.0.1",
     "@types/classnames": "^2.2.3",
