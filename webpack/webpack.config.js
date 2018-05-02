@@ -146,7 +146,6 @@ export default ({
 
     ...(isDev && [
       new webpack.HotModuleReplacementPlugin(),
-      // new webpack.NoErrorsPlugin(),
     ] || []),
 
     new CheckerPlugin(),
@@ -336,6 +335,7 @@ export default ({
     output,
     plugins,
     module,
+    mode: isDev ? 'development' : 'production',
   };
   if (!isDev) {
     config.externals = {
