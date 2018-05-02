@@ -169,13 +169,6 @@ export default ({
       },
       inject: true
     }),
-    ...(!isDev && !isLibrary && [
-
-      // Minify JS
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap: true
-      })
-    ] || []),
   ];
 
   const extractTextOptionsNonGlobal = {
