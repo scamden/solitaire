@@ -121,7 +121,8 @@ export default ({
       failPlugin
     ] || []),
 
-    new ForkTsCheckerWebpackPlugin(),
+
+    !isDemo ? new ForkTsCheckerWebpackPlugin() : (() => {}),
 
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'), // Tells React to build in either dev or prod modes. https://facebook.github.io/react/downloads.html (See bottom)
