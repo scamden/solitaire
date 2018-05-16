@@ -193,7 +193,7 @@ export default ({
   // yaya it's dirty but it's also DRY. DRY and dirty suckas.
   const extractTextOptionsGlobal = JSON.parse(JSON.stringify(extractTextOptionsNonGlobal));
   const extractTextOptionsCss = JSON.parse(JSON.stringify(extractTextOptionsNonGlobal));
-  extractTextOptionsCss[0] = extractTextOptionsGlobal[0] = {
+  extractTextOptionsCss[1] = extractTextOptionsGlobal[1] = {
     loader: 'css-loader',
     options: {
       modules: false,
