@@ -9,9 +9,6 @@ const _capitalize = require('lodash/capitalize');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 import failPlugin from 'webpack-fail-plugin';
-import {
-  CheckerPlugin
-} from 'awesome-typescript-loader';
 
 import externals from './externals';
 import transformTsConfigPaths from '../transformTSPaths';
@@ -73,7 +70,7 @@ export default ({
   isLibrary,
 }) => {
   const entry = [
-    'whatwg-fetch',
+    ...(!isLibrary ? ['whatwg-fetch'] : []),
     ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
     isLibrary ? './src/lib/index' : './src/app/index'
   ];
