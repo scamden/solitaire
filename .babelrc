@@ -9,15 +9,12 @@
       "presets": [
         "react-hmre"
       ],
-      "plugins": [
-        "transform-runtime"
-      ]
+      "plugins": []
     },
     "production": {
       "plugins": [
         "transform-react-constant-elements",
-        "transform-react-remove-prop-types",
-        "transform-runtime"
+        "transform-react-remove-prop-types"
       ]
     }
   }

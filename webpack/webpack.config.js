@@ -1,12 +1,12 @@
 import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import WebpackMd5Hash from 'webpack-md5-hash';
+
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import autoprefixer from 'autoprefixer';
 import * as path from 'path';
 
 const _capitalize = require('lodash/capitalize');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 import failPlugin from 'webpack-fail-plugin';
 import {
@@ -117,16 +117,10 @@ export default ({
   const isProdNotDemo = apiStage === 'prod';
 
   const plugins = [
-    // isDev && new BundleAnalyzerPlugin() ||  || (() => {}),
+    // isDev && new BundleAnalyzerPlugin() || (() => {}),
 
     ...(!isDev && [
       failPlugin
-    ] || []),
-
-    ...(!isDev && !isLibrary && [
-      // Hash the files using MD5 so that their names change when the content changes.
-      new WebpackMd5Hash(),
-
     ] || []),
 
     new webpack.DefinePlugin({
@@ -149,9 +143,8 @@ export default ({
     ] || []),
 
     new CheckerPlugin(),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: isDev ? 'app.css' : `[name]${!isLibrary && '.[contenthash]' || ''}.css`,
-      allChunks: true
     }),
     new HtmlWebpackPlugin({ // Create HTML file that includes references to bundled CSS and JS.
       template: '!!ejs-compiled-loader!src/app/index.ejs',
@@ -171,37 +164,36 @@ export default ({
     }),
   ];
 
-  const extractTextOptionsNonGlobal = {
-    fallback: 'style-loader',
-    use: [{
-        loader: 'typings-for-css-modules-loader',
-        options: {
-          namedExport: true,
-          camelCase: true,
-          sourceMap: true,
-          modules: true,
-          importLoaders: 1,
-          localIdentName: '[name]__[local]___[hash:base64:5]'
-        }
-      },
-      {
-        loader: 'postcss-loader',
-        options: {
-          plugins: (loader) => [
-            autoprefixer(),
-          ],
-          sourceMap: true
-        }
-      },
-      'resolve-url-loader?sourceMap',
-      'sass-loader?sourceMap'
-    ]
-  };
+  const extractTextOptionsNonGlobal = [
+    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+    {
+      loader: 'typings-for-css-modules-loader',
+      options: {
+        namedExport: true,
+        camelCase: true,
+        sourceMap: true,
+        modules: true,
+        importLoaders: 1,
+        localIdentName: '[name]__[local]___[hash:base64:5]'
+      }
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        plugins: (loader) => [
+          autoprefixer(),
+        ],
+        sourceMap: true
+      }
+    },
+    'resolve-url-loader?sourceMap',
+    'sass-loader?sourceMap'
+  ];
 
   // yaya it's dirty but it's also DRY. DRY and dirty suckas.
   const extractTextOptionsGlobal = JSON.parse(JSON.stringify(extractTextOptionsNonGlobal));
   const extractTextOptionsCss = JSON.parse(JSON.stringify(extractTextOptionsNonGlobal));
-  extractTextOptionsCss.use[0] = extractTextOptionsGlobal.use[0] = {
+  extractTextOptionsCss[0] = extractTextOptionsGlobal[0] = {
     loader: 'css-loader',
     options: {
       modules: false,
@@ -210,16 +202,13 @@ export default ({
       localIdentName: '[name]__[local]___[hash:base64:5]'
     }
   };
-  extractTextOptionsCss.use.splice(extractTextOptionsCss.use.indexOf('sass-loader'), 1);
+  extractTextOptionsCss.splice(extractTextOptionsCss.indexOf('sass-loader'), 1);
 
   const module = {
     rules: [{
         test: /\.tsx?$/,
         use: [{
             loader: 'babel-loader',
-            options: {
-              "plugins": ["transform-runtime"]
-            }
           },
           {
             loader: 'ts-loader',
@@ -303,26 +292,39 @@ export default ({
       },
       {
         test: (absPath) => /\.scss$/.test(absPath) && !globalSassRegex.test(absPath),
-        use: ExtractTextPlugin.extract(extractTextOptionsNonGlobal)
+        use: extractTextOptionsNonGlobal
       },
       {
         test: globalSassRegex,
-        use: ExtractTextPlugin.extract(extractTextOptionsGlobal)
+        use: extractTextOptionsGlobal
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract(extractTextOptionsCss)
+        use: extractTextOptionsCss
       }
     ]
   };
 
   // webpack config object
   const config = {
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true
+          }
+        }
+      }
+    },
     resolve: {
       extensions: ['.js', '.ts', '.tsx'],
-      alias: aliases
+      alias: aliases,
+      symlinks: !isDev
     },
-    devtool: 'source-map', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
+    devtool: isDev ? 'source-map' : 'none', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
     entry,
     target: 'web', // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
     output,
