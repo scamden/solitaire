@@ -7,6 +7,7 @@ import * as path from 'path';
 
 const _capitalize = require('lodash/capitalize');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 import failPlugin from 'webpack-fail-plugin';
 
@@ -120,6 +121,8 @@ export default ({
       failPlugin
     ] || []),
 
+    new ForkTsCheckerWebpackPlugin(),
+
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'), // Tells React to build in either dev or prod modes. https://facebook.github.io/react/downloads.html (See bottom)
       __MOCK_DATA__: !!(isDemo || !apiStage),
@@ -139,7 +142,6 @@ export default ({
       new webpack.HotModuleReplacementPlugin(),
     ] || []),
 
-    new CheckerPlugin(),
     new MiniCssExtractPlugin({
       filename: isDev ? 'app.css' : `[name]${!isLibrary && '.[contenthash]' || ''}.css`,
     }),
@@ -210,6 +212,7 @@ export default ({
           {
             loader: 'ts-loader',
             options: {
+              transpileOnly: true, // checking is done by the ForkTsCheckerWebpackPlugin
               compilerOptions: {
                 outDir: './'
               }
