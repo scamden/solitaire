@@ -1,6 +1,15 @@
 {
   "presets": [
-    "es2015",
+    ["env", {
+      "targets": {
+        "browsers": [
+          "last 2 versions",
+          "ie >= 11"
+        ]
+      },
+      "useBuiltIns": false,
+      "modules": "commonjs"
+    }],
     "react",
     "stage-1"
   ],
