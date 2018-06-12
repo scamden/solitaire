@@ -72,7 +72,7 @@ export default ({
 }) => {
   const entry = [
     ...(!isLibrary ? ['whatwg-fetch'] : []),
-    ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
+    ...(isDev && ['babel-polyfill', './src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
     isLibrary ? './src/lib/index' : './src/app/index'
   ];
   const distPath = path.resolve(__dirname, `../dist/`);
