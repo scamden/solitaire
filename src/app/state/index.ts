@@ -1,7 +1,6 @@
 import { Action } from 'typescript-fsa';
 
-import { create, createRootThunks, Dispatch, IApi, IItem } from '@creditiq/console-state';
-import { ISearchFilter } from '@creditiq/search';
+import { create, createRootThunks, Dispatch, IApi, IItem, ISearchFilter } from '@creditiq/console-state';
 
 export const api: IApi = create(__MOCK_DATA__);
 
