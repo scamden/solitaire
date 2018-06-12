@@ -337,6 +337,7 @@ export default ({
     config.externals = {
       ...(isLibrary && {
         'react': 'commonjs react', // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
+        // leaving these here to make 100 percent sure they are excluded even if they aren't in peerDeps but should be handled by the package.json reading below
         '@creditiq/credit-report-modal': 'commonjs @creditiq/credit-report-modal',
         '@creditiq/item': 'commonjs @creditiq/item',
         '@creditiq/loading': 'commonjs @creditiq/loading',
@@ -344,6 +345,10 @@ export default ({
         'global.scss': 'commonjs global.scss',
         '_variables.scss': 'commonjs _variables.scss',
         '_mixins.scss': 'commonjs _mixins.scss',
+        ...Object.keys(require('../package.json').peerDependencies || {}).reduce((externals, dep) => ({
+          ...externals,
+          [dep]: `commonjs ${dep}`
+        }), {})
       }),
       ...externals
     };
