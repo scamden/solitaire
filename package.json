@@ -44,8 +44,8 @@
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@creditiq/console-state": "^9.3.1",
-    "@creditiq/item": "^10.6.1",
+    "@creditiq/console-state": "^10.1.2",
+    "@creditiq/item": "^12.2.1",
     "@creditiq/search": "^1.0.1",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.5",
@@ -103,7 +103,7 @@
     "transform-ts-paths": "^1.0.1",
     "ts-jest": "^20.0.11",
     "ts-loader": "^4.2.0",
-    "tslint": "^5.4.2",
+    "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "tslint-language-service": "^0.9.6",
     "tslint-react": "^3.0.0",

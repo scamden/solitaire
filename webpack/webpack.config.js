@@ -337,7 +337,9 @@ export default ({
     config.externals = {
       ...(isLibrary && {
         'react': 'commonjs react', // this line is just to use the React dependency of our parent-testing-project instead of using our own React.
+        '@creditiq/credit-report-modal': 'commonjs @creditiq/credit-report-modal',
         '@creditiq/item': 'commonjs @creditiq/item',
+        '@creditiq/loading': 'commonjs @creditiq/loading',
         '@creditiq/split-web-client': 'commonjs @creditiq/split-web-client',
         'global.scss': 'commonjs global.scss',
         '_variables.scss': 'commonjs _variables.scss',
