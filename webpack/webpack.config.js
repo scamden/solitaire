@@ -14,7 +14,7 @@ import failPlugin from 'webpack-fail-plugin';
 import externals from './externals';
 import transformTsConfigPaths from '../transformTSPaths';
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const globalSassRegex = /(toastr)\.scss$/;
+const globalSassRegex = /(global|toastr)\.scss$/;
 const aliases = transformTsConfigPaths();
 
 function getApiStageVariables(apiStage) {
@@ -144,7 +144,7 @@ export default ({
     ] || []),
 
     new MiniCssExtractPlugin({
-      filename: isDev ? 'app.css' : `[name]${!isLibrary && '.[contenthash]' || ''}.css`,
+      filename: `[name].[contenthash].css`,
     }),
     new HtmlWebpackPlugin({ // Create HTML file that includes references to bundled CSS and JS.
       template: '!!ejs-compiled-loader!src/app/index.ejs',
@@ -165,18 +165,7 @@ export default ({
   ];
 
   const extractTextOptionsNonGlobal = [
-    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-    {
-      loader: 'typings-for-css-modules-loader',
-      options: {
-        namedExport: true,
-        camelCase: true,
-        sourceMap: true,
-        modules: true,
-        importLoaders: 1,
-        localIdentName: '[name]__[local]___[hash:base64:5]'
-      }
-    },
+    (isDev || isLibrary) ? 'style-loader' : MiniCssExtractPlugin.loader,
     {
       loader: 'postcss-loader',
       options: {
