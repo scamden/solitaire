@@ -4,8 +4,6 @@ import { Component } from 'react';
 
 import * as classnames from 'classnames';
 
-import * as globalStyle from 'global.scss';
-
 export interface IStateProps {
   className?: string;
 }
