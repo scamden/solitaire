@@ -169,7 +169,7 @@ export default ({
     {
       loader: 'css-loader',
       options: {
-        modules: false,
+        modules: true,
         sourceMap: false,
         importLoaders: 1,
         localIdentName: '[name]__[local]___[hash:base64:5]'
