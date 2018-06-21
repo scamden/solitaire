@@ -167,16 +167,35 @@ export default ({
   const extractTextOptionsNonGlobal = [
     (isDev || isLibrary) ? 'style-loader' : MiniCssExtractPlugin.loader,
     {
+      loader: 'css-loader',
+      options: {
+        modules: false,
+        sourceMap: false,
+        importLoaders: 1,
+        localIdentName: '[name]__[local]___[hash:base64:5]'
+      }
+    },
+    {
       loader: 'postcss-loader',
       options: {
         plugins: (loader) => [
           autoprefixer(),
         ],
-        sourceMap: true
+        sourceMap: false
       }
     },
-    'resolve-url-loader?sourceMap',
-    'sass-loader?sourceMap'
+    {
+      loader: 'resolve-url-loader',
+      options: {
+        sourceMap: false
+      }
+    },
+    {
+      loader: 'sass-loader',
+      options: {
+        sourceMap: false
+      }
+    }
   ];
 
   // yaya it's dirty but it's also DRY. DRY and dirty suckas.
@@ -298,6 +317,7 @@ export default ({
   // webpack config object
   const config = {
     optimization: {
+      minimize: !isDev && !isLibrary,
       splitChunks: {
         cacheGroups: {
           styles: {
@@ -314,7 +334,7 @@ export default ({
       alias: aliases,
       symlinks: !isDev
     },
-    devtool: isDev ? 'source-map' : 'none', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
+    devtool: (isDev || isLibrary) ? 'source-map' : 'none', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
     entry,
     target: 'web', // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
     output,
