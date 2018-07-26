@@ -37,14 +37,14 @@
     "url": "git+https://github.com/creditiq/web-base.git"
   },
   "dependencies": {
-    "@creditiq/style": "^5.1.0",
+    "@creditiq/style": "^5.5.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@creditiq/console-state": "^10.3.4",
+    "@creditiq/console-state": "^10.4.0",
     "@creditiq/item": "^18.3.0",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.5",
