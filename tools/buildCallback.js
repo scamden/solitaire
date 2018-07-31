@@ -4,6 +4,7 @@ import {
   chalkWarning,
   chalkProcessing
 } from './chalkConfig';
+import * as fs from 'fs';
 
 export const doneCallback = (error, stats) => {
   if (error) { // so a fatal error occurred. Stop here.
@@ -15,6 +16,8 @@ export const doneCallback = (error, stats) => {
   if (jsonStats.errors.length) {
     return jsonStats.errors.map(error => console.log(chalkError(error)));
   }
+
+  fs.writeFileSync('./stats.json', JSON.stringify(jsonStats));
 
   // // uncomment if you want warnings, but there are a LOT
   // if (jsonStats.warnings.length) {

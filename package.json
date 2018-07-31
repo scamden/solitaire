@@ -39,7 +39,9 @@
   "dependencies": {
     "@creditiq/style": "^5.5.0",
     "classnames": "^2.2.5",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.4"
+  },
+  "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
@@ -91,6 +93,8 @@
     "npm-run-all": "^4.1.1",
     "postcss-loader": "^2.0.6",
     "raf": "^3.4.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-immutable-state-invariant": "^1.2.4",
