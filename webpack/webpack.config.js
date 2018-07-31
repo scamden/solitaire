@@ -116,7 +116,7 @@ export default ({
 
   const plugins = [
     // isDev && new BundleAnalyzerPlugin() || (() => {}),
-
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ...(!isDev && [
       failPlugin
     ] || []),

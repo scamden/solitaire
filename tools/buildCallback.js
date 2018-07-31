@@ -17,7 +17,8 @@ export const doneCallback = (error, stats) => {
     return jsonStats.errors.map(error => console.log(chalkError(error)));
   }
 
-  fs.writeFileSync('./stats.json', JSON.stringify(jsonStats));
+  const bundleStats = jsonStats.children ? jsonStats.children[0] : jsonStats;
+  fs.writeFileSync('./stats.json', JSON.stringify(bundleStats, null, 2));
 
   // // uncomment if you want warnings, but there are a LOT
   // if (jsonStats.warnings.length) {
