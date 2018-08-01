@@ -4,6 +4,7 @@
   "main": "dist/main.js",
   "typings": "dist/lib/index.d.ts",
   "scripts": {
+    "precommit": "ciq package check-file-links",
     "commitmsg": "validate-commit-msg",
     "preversion": "npm run build:lib",
     "clean": "rm -rf dist",
