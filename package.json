@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
+    "precommit": "ciq package check-file-links",
     "commitmsg": "validate-commit-msg",
     "preversion": "npm run test",
     "clean": "rm -rf dist",
