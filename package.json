@@ -5,7 +5,8 @@
   "scripts": {
     "precommit": "ciq package check-file-links",
     "commitmsg": "validate-commit-msg",
-    "preversion": "npm run test",
+    "preversion": "ciq get && npm run test",
+    "postpublish": "ciq push",
     "clean": "rm -rf dist",
     "precompile": "npm run clean",
     "justCompile": "node_modules/.bin/tsc -p .",
