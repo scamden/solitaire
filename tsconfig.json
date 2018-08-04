@@ -25,9 +25,7 @@
       ]
     },
     "plugins": [
-      {
-        "name": "tslint-language-service"
-      }
+
     ]
   },
   "compileOnSave": false,
