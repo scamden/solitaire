@@ -356,7 +356,7 @@ export default ({
         '_mixins.scss': 'commonjs _mixins.scss',
         ...Object.keys(require('../package.json').peerDependencies || {}).reduce((externals, dep) => ({
           ...externals,
-          [dep]: `commonjs ${dep}`
+          [dep]: `commonjs @root/${dep}`
         }), {})
       }),
       ...externals
