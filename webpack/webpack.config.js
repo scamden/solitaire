@@ -331,7 +331,10 @@ export default ({
     },
     resolve: {
       extensions: ['.js', '.ts', '.tsx'],
-      alias: aliases,
+      alias: {
+        ...aliases,
+        '@root': path.resolve(__dirname, `../node_modules/`)
+      },
       symlinks: !isDev
     },
     devtool: (isDev || isLibrary) ? 'source-map' : 'none', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
