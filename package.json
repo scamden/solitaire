@@ -2,7 +2,7 @@
   "name": "@creditiq/web-base",
   "version": "1.0.1",
   "main": "dist/main.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/lib/index.d.ts",
   "scripts": {
     "precommit": "ciq package check-file-links",
     "commitmsg": "validate-commit-msg",
