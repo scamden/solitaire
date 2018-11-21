@@ -69,6 +69,7 @@ export default ({
   apiStage,
   isOffline,
   isLibrary,
+  needsCompile
 }) => {
   const entry = [
     ...(!isLibrary ? ['whatwg-fetch'] : []),
@@ -221,7 +222,7 @@ export default ({
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true, // checking is done by the ForkTsCheckerWebpackPlugin
+              transpileOnly: !needsCompile, // checking is done by the ForkTsCheckerWebpackPlugin
               compilerOptions: {
                 outDir: './'
               }
