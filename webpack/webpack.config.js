@@ -9,8 +9,6 @@ const _capitalize = require('lodash/capitalize');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-import failPlugin from 'webpack-fail-plugin';
-
 import externals from './externals';
 import transformTsConfigPaths from '../transformTSPaths';
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -118,10 +116,6 @@ export default ({
   const plugins = [
     // isDev && new BundleAnalyzerPlugin() || (() => {}),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ...(!isDev && [
-      failPlugin
-    ] || []),
-
 
     !isDemo ? new ForkTsCheckerWebpackPlugin() : (() => {}),
 
