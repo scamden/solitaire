@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@creditiq/console-state": "^12.6.0",
-    "@creditiq/item": "^21.0.0",
+    "@creditiq/item": "^21.6.0",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.5",
     "@types/enzyme-adapter-react-16": "^1.0.1",
