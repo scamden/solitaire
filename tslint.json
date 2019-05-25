@@ -45,9 +45,6 @@
     "no-console": [
       true,
       "debug",
-      "info",
-      "time",
-      "timeEnd",
       "trace"
     ],
     "no-construct": true,
@@ -101,8 +98,7 @@
     "space-within-parens": false,
     "switch-default": false,
     "trailing-comma": [
-      false,
-      {
+      false, {
         "multiline": "always",
         "singleline": "never"
       }
@@ -119,8 +115,7 @@
       "member-variable-declaration"
     ],
     "typedef-whitespace": [
-      true,
-      {
+      true, {
         "index-signature": "nospace",
         "parameter": "nospace",
         "property-declaration": "nospace",
