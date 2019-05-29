@@ -328,6 +328,9 @@ export default ({
       extensions: ['.js', '.ts', '.tsx'],
       alias: {
         ...aliases,
+        "global.scss": path.resolve(__dirname, "../src/styles/global.scss"),
+        "_variables.scss": path.resolve(__dirname, "../src/styles/_variables.scss"),
+        "_mixins.scss": path.resolve(__dirname, "../src/styles/_mixins.scss"),
         '@root': path.resolve(__dirname, `../node_modules/`)
       },
       symlinks: !isDev
