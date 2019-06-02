@@ -23,5 +23,6 @@ module.exports = {
   moduleNameMapper: moduleNameMapper,
   watchPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFiles: ['./setup.js'],
+  setupFilesAfterEnv: ['./post-setup.ts'],
   snapshotResolver: './snapshotResolver.js',
 };
