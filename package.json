@@ -38,7 +38,7 @@
     "url": "git+https://github.com/creditiq/web-base.git"
   },
   "dependencies": {
-    "@creditiq/style": "^7.1.1",
+    "@creditiq/style": "^7.6.0",
     "classnames": "^2.2.5"
   },
   "peerDependencies": {
@@ -47,8 +47,8 @@
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@creditiq/console-state": "^13.3.1",
-    "@creditiq/item": "^24.13.1",
+    "@creditiq/console-state": "^13.8.0",
+    "@creditiq/item": "^28.1.0",
     "@types/classnames": "^2.2.3",
     "@types/enzyme": "^3.1.5",
     "@types/enzyme-adapter-react-16": "^1.0.1",
