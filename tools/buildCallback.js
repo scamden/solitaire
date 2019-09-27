@@ -1,12 +1,12 @@
-import {
+const {
   chalkError,
   chalkSuccess,
   chalkWarning,
   chalkProcessing
-} from './chalkConfig';
-import * as fs from 'fs';
+} = require('./chalkConfig');
+const fs = require('fs');
 
-export const doneCallback = (error, stats) => {
+module.exports.doneCallback = (error, stats) => {
   if (error) { // so a fatal error occurred. Stop here.
     console.log(chalkError(error));
     return 1;

@@ -1,17 +1,17 @@
-import webpack from 'webpack';
+const webpack = require('webpack');
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import autoprefixer from 'autoprefixer';
-import * as path from 'path';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const path = require('path');
 
 const _capitalize = require('lodash/capitalize');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-import externals from './externals';
-import transformTsConfigPaths from '../transformTSPaths';
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const externals = require('./externals');
+const transformTsConfigPaths = require('../transformTSPaths');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const globalSassRegex = /(global|toastr)\.scss$/;
 const aliases = transformTsConfigPaths();
 
@@ -20,48 +20,48 @@ function getApiStageVariables(apiStage) {
     case 'prod':
       return {
         __API_BASE_URL__: '"https://api.creditiq.com"',
-        __SOCKET_BASE_URL__: '"https://socket.creditiq.com"',
-        __SPLIT_API_KEY__: '"45kigfkjph2hipkm0p92l1si72og3ooov32j"',
-        __SENTRY_URL__: '"https://1cd04e434335429085e3ab6780e2b77a@sentry.io/148147"',
-        __NEW_RELIC_APP_ID__: '"51898835"',
+          __SOCKET_BASE_URL__: '"https://socket.creditiq.com"',
+          __SPLIT_API_KEY__: '"45kigfkjph2hipkm0p92l1si72og3ooov32j"',
+          __SENTRY_URL__: '"https://1cd04e434335429085e3ab6780e2b77a@sentry.io/148147"',
+          __NEW_RELIC_APP_ID__: '"51898835"',
       }
-    case 'staging':
-      return {
-        __API_BASE_URL__: '"https://api.staging.creditiq.com"',
-        __SOCKET_BASE_URL__: '"https://socket.staging.creditiq.com"',
-        __SPLIT_API_KEY__: '"qrseg78md8q2go6gq37usd02s4cutptk07qn"',
-        __SENTRY_URL__: '"https://6f7ddaa1250d46c1bc523d538d6c2726@sentry.io/148097"',
-        __NEW_RELIC_APP_ID__: '"51902382"',
-      }
+      case 'staging':
+        return {
+          __API_BASE_URL__: '"https://api.staging.creditiq.com"',
+            __SOCKET_BASE_URL__: '"https://socket.staging.creditiq.com"',
+            __SPLIT_API_KEY__: '"qrseg78md8q2go6gq37usd02s4cutptk07qn"',
+            __SENTRY_URL__: '"https://6f7ddaa1250d46c1bc523d538d6c2726@sentry.io/148097"',
+            __NEW_RELIC_APP_ID__: '"51902382"',
+        }
 
-    case 'dev':
-      return {
-        __API_BASE_URL__: '"https://api.dev.creditiq.com"',
-        __SOCKET_BASE_URL__: '"https://socket.dev.creditiq.com"',
-        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
-        __SENTRY_URL__: '""',
-        __NEW_RELIC_APP_ID__: '""',
-      }
-    case 'local':
-      return {
-        __API_BASE_URL__: '"http://localhost:3000"',
-        __SOCKET_BASE_URL__: '"http://localhost:8888"',
-        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
-        __SENTRY_URL__: '""',
-        __NEW_RELIC_APP_ID__: '""',
-      }
-    default:
-      return {
-        __API_BASE_URL__: '""',
-        __SOCKET_BASE_URL__: '""',
-        __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
-        __SENTRY_URL__: '""',
-        __NEW_RELIC_APP_ID__: '""',
-      }
+        case 'dev':
+          return {
+            __API_BASE_URL__: '"https://api.dev.creditiq.com"',
+              __SOCKET_BASE_URL__: '"https://socket.dev.creditiq.com"',
+              __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+              __SENTRY_URL__: '""',
+              __NEW_RELIC_APP_ID__: '""',
+          }
+          case 'local':
+            return {
+              __API_BASE_URL__: '"http://localhost:3000"',
+                __SOCKET_BASE_URL__: '"http://localhost:8888"',
+                __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+                __SENTRY_URL__: '""',
+                __NEW_RELIC_APP_ID__: '""',
+            }
+            default:
+              return {
+                __API_BASE_URL__: '""',
+                  __SOCKET_BASE_URL__: '""',
+                  __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
+                  __SENTRY_URL__: '""',
+                  __NEW_RELIC_APP_ID__: '""',
+              }
   }
 }
 
-export default ({
+module.exports = ({
   isDev,
   isDemo,
   apiStage,
@@ -71,7 +71,7 @@ export default ({
 }) => {
   const entry = [
     ...(!isLibrary ? ['whatwg-fetch'] : []),
-    ...(isDev && ['babel-polyfill', './src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
+    ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
     isLibrary ? './src/lib/index' : './src/app/index'
   ];
   const distPath = path.resolve(__dirname, `../dist/`);
@@ -211,28 +211,19 @@ export default ({
     rules: [{
         test: /\.tsx?$/,
         use: [{
-            loader: 'babel-loader',
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: !needsCompile, // checking is done by the ForkTsCheckerWebpackPlugin
-              compilerOptions: {
-                outDir: './'
-              }
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: !needsCompile, // checking is done by the ForkTsCheckerWebpackPlugin
+            compilerOptions: {
+              outDir: './'
             }
           }
-        ]
+        }]
       },
       {
         test: /\.js$/,
         enforce: 'pre',
         use: ["source-map-loader"]
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules\/(?!(@creditiq\/?|download\-in\-browser)).*/,
-        use: ['babel-loader']
       },
       {
         test: /\.eot(\?v=\d+.\d+.\d+)?$/,
