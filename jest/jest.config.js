@@ -12,7 +12,7 @@ const moduleNameMapper = Object.assign({}, transformPaths(
 module.exports = {
   preset: 'ts-jest',
   verbose: true,
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   roots: ['../src'],
   testPathIgnorePatterns: ['\\.d\\.ts$'],
   moduleFileExtensions: [
