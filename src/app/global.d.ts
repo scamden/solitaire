@@ -9,7 +9,6 @@ declare var __STRIPE_KEY__: string;
 declare var __SENTRY_URL__: string;
 declare var __MIXPANEL_TOKEN__: string;
 declare var __OFFLINE_MODE__: boolean;
-declare module 'redux-responsive';
 declare var StripeCheckout: any;
 declare var FS: {
   setUserVars: (o: object) => void;
