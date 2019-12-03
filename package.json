@@ -4,7 +4,7 @@
   "main": "dist/main.js",
   "typings": "dist/lib/index.d.ts",
   "scripts": {
-    "postinstall": "! pwd | grep -q node_modules && patch-package",
+    "postinstall": "if ! pwd | grep -q node_modules ; then patch-package; fi",
     "precommit": "ciq package check-file-links",
     "commitmsg": "validate-commit-msg",
     "preversion": "npm run build:lib",
