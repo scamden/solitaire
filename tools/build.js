@@ -14,7 +14,7 @@ const {
   doneCallback
 } = require('./buildCallback');
 
-const branchName = process.env.npm_package_config_build_branch; // ok if this is undefined
+const branchName = process.env.CIQ_BUILD_BRANCH; // ok if this is undefined
 process.env.NODE_ENV = 'production'; // this assures React is built in prod mode
 
 console.log(chalkProcessing('Generating minified bundle for production via Webpack. This will take a moment...'));
