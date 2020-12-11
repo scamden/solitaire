@@ -44,7 +44,7 @@ function getApiStageVariables(apiStage) {
       }
     case 'local':
       return {
-        __API_BASE_URL__: '"http://localhost:3000"',
+        __API_BASE_URL__: '"http://localhost:3000/dev"',
         __SOCKET_BASE_URL__: '"http://localhost:8888"',
         __SPLIT_API_KEY__: '"4qd9s8hum9s4jereec5b2218rfg7i7b405nd"',
         __SENTRY_URL__: '""',
@@ -95,7 +95,7 @@ module.exports = ({
 
   let __TITLE_ENV__ = '"';
   if (isDev) {
-    __TITLE_ENV__ += ' - Dev';
+    __TITLE_ENV__ += ' - lh';
   }
   if (isOffline) {
     __TITLE_ENV__ += ' - Offline';
