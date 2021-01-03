@@ -19,6 +19,7 @@
     "curly": true,
     "eofline": false,
     "forin": true,
+    "jsx-no-lambda": false,
     "indent": [
       true,
       "spaces",

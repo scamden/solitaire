@@ -70,7 +70,6 @@ module.exports = ({
   needsCompile
 }) => {
   const entry = [
-    ...(!isLibrary ? ['whatwg-fetch'] : []),
     ...(isDev && ['./src/app/webpack-public-path', 'webpack-hot-middleware/client?reload=true'] || []),
     isLibrary ? './src/lib/index' : './src/app/index'
   ];
@@ -252,6 +251,17 @@ module.exports = ({
         options: {
           limit: 10000,
           mimetype: 'application/octet-stream',
+          name: 'assets/fonts/[name].[ext]'
+        }
+      }]
+    },
+    {
+      test: /\.otf(\?v=\d+.\d+.\d+)?$/,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'font/otf',
           name: 'assets/fonts/[name].[ext]'
         }
       }]

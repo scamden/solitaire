@@ -2,7 +2,9 @@
 import * as React from 'react';
 import { Component } from 'react';
 
-import * as classnames from 'classnames';
+import * as _ from 'lodash';
+
+import { Game } from './Game';
 
 export interface IStateProps {
   className?: string;
@@ -15,14 +17,10 @@ export interface IProps extends IDispatchProps, IStateProps { }
 
 export interface IState {
 }
+
 export class MainComponent extends Component<IProps, IState> {
 
   render() {
-    const { className } = this.props;
-    return (
-      <div className={classnames(className)}>
-        Your code here
-      </div>
-    );
+    return <div className="pin-to-edges" style={{ background: 'green' }}><Game /></div>;
   }
 }
