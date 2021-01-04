@@ -46,12 +46,6 @@ type RemainingDeckProps = {
   selectedCards: Card[] | undefined
 };
 
-type DownCardProps = {
-  next: () => void;
-  className?: string;
-  style?: React.HTMLAttributes<HTMLDivElement>['style'];
-};
-
 const RemainingDeck: React.FunctionComponent<RemainingDeckProps> = ({ showing, facedown, next, onCardClick, selectedCards, }) => {
   const topFaceDown = _.last(facedown);
   const allRenderedDeckCards = [...showing, ...facedown];
@@ -64,7 +58,7 @@ const RemainingDeck: React.FunctionComponent<RemainingDeckProps> = ({ showing, f
         card={card}
         key={getCardText(card)}
         style={{
-          marginLeft: (isFacedown) ? '-53px' : !isTopFaceDown ? '-30px' : undefined,
+          marginLeft: (isFacedown) ? '-53.4px' : !isTopFaceDown ? '-30px' : undefined,
           marginRight: (lastShowing) ? '64px' : undefined,
           ...isFacedown && !isTopFaceDown && { boxShadow: 'none' }
         }}
