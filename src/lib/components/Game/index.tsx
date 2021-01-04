@@ -5,9 +5,20 @@ import { Component } from 'react';
 import * as _ from 'lodash';
 
 import * as classnames from 'classnames';
-import { runInThisContext } from 'vm';
-import { Card, cardsEqual, getCardColor, getCardText, isSuperKingCard, isZeroCard, makeShuffledDeck, Suit, SUITS, SuperKingCard, ZeroCard } from '../../cards';
-import { BigSuit, CARD_SIZE, CardContainer, CardDisplay } from '../Card';
+import {
+  Card,
+  cardsEqual,
+  getCardColor,
+  getCardText,
+  isSuperKingCard,
+  isZeroCard,
+  makeShuffledDeck,
+  Suit,
+  SUITS,
+  SuperKingCard,
+  ZeroCard,
+} from '../../cards';
+import { CARD_SIZE, CardDisplay } from '../Card';
 
 export interface IStateProps {
   className?: string;
@@ -27,13 +38,9 @@ export interface IGameState {
   autoMove?: boolean;
 }
 
-const cardBackImageUrl = require('../../../assets/images/card-back-simple.jpg');
-/* const cardBackImageUrl = require('../../assets/images/card-back.png'); */
-
-const CARD_BACK_STYLE = { background: `url(${cardBackImageUrl})`, backgroundSize: 'cover', backgroundPositionX: 'center' };
-
 type RemainingDeckProps = {
   showing: Card[];
+  facedown: Card[];
   next: () => void;
   onCardClick: (card: Card) => void;
   selectedCards: Card[] | undefined
@@ -45,23 +52,23 @@ type DownCardProps = {
   style?: React.HTMLAttributes<HTMLDivElement>['style'];
 };
 
-const DownCard = ({ next, className, style, }: DownCardProps) =>
-  <CardContainer onClick={next} style={{ ...style, ...CARD_BACK_STYLE }} className={className} />;
-
-const RemainingDeck: React.FunctionComponent<RemainingDeckProps> = ({ showing, next, onCardClick, selectedCards, }) => (
-  <div className="flex-row m-l-auto flex-shrink-0">
-    {showing.map((card, i) => (
-      <CardDisplay
-        card={card}
-        key={getCardText(card)}
-        style={{ marginLeft: '-10px' }}
-        onClick={() => i === showing.length - 1 && onCardClick(card)}
-        selected={isSelected(card, selectedCards)}
-      />
-    ))}
-    <DownCard next={next} className="m-l-sub2" />
-  </div>
-);
+const RemainingDeck: React.FunctionComponent<RemainingDeckProps> = ({ showing, facedown, next, onCardClick, selectedCards, }) => {
+  const topFaceDown = _.last(facedown);
+  return (
+    <div className="flex-row m-l-auto flex-shrink-0" style={{ transition: 'all 0.5s' }}>
+      {showing.map((card, i) => (
+        <CardDisplay
+          card={card}
+          key={getCardText(card)}
+          style={{ marginLeft: '-30px' }}
+          onClick={() => i === showing.length - 1 && onCardClick(card)}
+          selected={isSelected(card, selectedCards)}
+        />
+      ))}
+      {topFaceDown && <CardDisplay card={topFaceDown} onClick={next} className="m-l-sub2" selected={false} flipped={true} />}
+    </div>
+  );
+};
 
 type SuitStack = [ZeroCard, ...Card[]];
 type Stack = {
@@ -122,7 +129,7 @@ export class Game extends Component<IProps, IGameState> {
   }
 
   next = () => {
-    this.maybeSelectCard(undefined);
+    this.getNextSelectedCards(undefined);
     const rotateShowing = this.state.showing.length >= 3;
     this.setState({
       facedown: [...rotateShowing ? _.take(this.state.showing, 1) : [], ..._.initial(this.state.facedown)],
@@ -132,11 +139,23 @@ export class Game extends Component<IProps, IGameState> {
   }
 
   onDeckCardClick = (card: Card) => {
-    this.maybeSelectCard([card]);
+    this.selectCards(this.getNextSelectedCards([card]));
   }
 
-  maybeSelectCard = (cards: Card[] | undefined) => {
-    this.setState({ selectedCards: _.difference(cards, this.state.selectedCards || []) });
+  getNextSelectedCards = (cards: Card[] | undefined) => {
+    if (cardsEqual(_.first(cards), _.first(this.state.selectedCards))) {
+      return undefined;
+    } else {
+      return cards;
+    }
+  }
+
+  selectCards = (selectedCards: Card[] | undefined) => {
+    this.setState({ selectedCards }, () => {
+      if (this.state.autoMove) {
+        this.autoMove();
+      }
+    });
   }
 
   turnUpStackCard = (stackIndex: number,) => {
@@ -148,41 +167,6 @@ export class Game extends Component<IProps, IGameState> {
 
   getNewStacks(stackIndex: number, stack: Stack, stacks: Stack[]): Stack[] {
     return [...stacks.slice(0, stackIndex), stack, ...stacks.slice(stackIndex + 1)];
-  }
-
-  dblClickSingle = (card: Card) => {
-  }
-
-  onStackClick = (stackIndex: number, card: Card | SuperKingCard) => {
-    if (!isSuperKingCard(card)) {
-      const cards = [card, ..._.takeRightWhile(
-        this.state.stacks[stackIndex].showing,
-        (c) => !cardsEqual(card, c)
-      )].filter((c): c is Card => !isSuperKingCard(c));
-      this.maybeSelectCard(cards);
-    }
-    const selectedCards = this.state.selectedCards;
-    const selectedCard = _.first(selectedCards);
-    if (selectedCards && selectedCard) {
-      const topCard = _.last(this.state.stacks[stackIndex].showing);
-
-      const canMove = (!topCard || cardsEqual(topCard, card))
-        && (isSuperKingCard(card) || getCardColor(selectedCard) !== getCardColor(card))
-        && card.value - 1 === selectedCard.value;
-      if (canMove) {
-        const newStateWithoutSelected = this.getStateWithoutSelectedCard(selectedCards);
-        const stack = newStateWithoutSelected.stacks[stackIndex];
-        const stacks = this.getNewStacks(
-          stackIndex,
-          { ...stack, showing: [...stack.showing, ...selectedCards] },
-          newStateWithoutSelected.stacks,
-        );
-        this.setState({
-          ...newStateWithoutSelected,
-          stacks,
-        });
-      }
-    }
   }
 
   getStateWithoutSelectedCard(selectedCards: Card[] | undefined) {
@@ -200,26 +184,73 @@ export class Game extends Component<IProps, IGameState> {
     };
   }
 
-  onSuitStackClick = (card: ZeroCard | Card) => {
-    if (!isZeroCard(card)) {
-      this.maybeSelectCard([card]);
-    }
-    const selectedCards = this.state.selectedCards;
+  maybeMoveToStack = (stackIndex: number, card: Card | SuperKingCard, selectedCards: Card[] | undefined): true | void => {
+    const topCard = _.last(this.state.stacks[stackIndex].showing);
     const selectedCard = _.first(selectedCards);
-    if (selectedCards && selectedCard) {
-      const canAdd = selectedCard.suit === card.suit && card.value === selectedCard.value - 1;
-      if (canAdd) {
-        const newStateWithoutSelected = this.getStateWithoutSelectedCard(selectedCards);
-        const newState = {
-          ...newStateWithoutSelected,
-          suitStacks: {
-            ...newStateWithoutSelected.suitStacks,
-            [card.suit]: [...newStateWithoutSelected.suitStacks[card.suit] || [], ...selectedCards]
-          }
-        };
-        this.setState(newState);
-      }
+    const canMove = selectedCard
+      && (!topCard || cardsEqual(topCard, card))
+      && (isSuperKingCard(card) || getCardColor(selectedCard) !== getCardColor(card))
+      && card.value - 1 === selectedCard.value;
+    if (canMove) {
+      const newStateWithoutSelected = this.getStateWithoutSelectedCard(selectedCards);
+      const stack = newStateWithoutSelected.stacks[stackIndex];
+      const stacks = this.getNewStacks(
+        stackIndex,
+        { ...stack, showing: [...stack.showing.filter((c) => !isSuperKingCard(c)), ...selectedCards || []] },
+        newStateWithoutSelected.stacks,
+      );
+      this.setState({
+        ...newStateWithoutSelected,
+        stacks,
+      });
+      return true;
     }
+  }
+
+  onStackClick = (stackIndex: number, card: Card | SuperKingCard): true | void => {
+    const nextSelectedCards = !isSuperKingCard(card) ?
+      this.getNextSelectedCards([card, ..._.takeRightWhile(
+        this.state.stacks[stackIndex].showing,
+        (c) => !cardsEqual(card, c)
+      )].filter((c): c is Card => !isSuperKingCard(c)))
+      : undefined;
+
+    if (!this.maybeMoveToStack(stackIndex, card, this.state.selectedCards)) {
+      this.selectCards(nextSelectedCards);
+    }
+  }
+
+  maybeMoveToSuitStack = (card: ZeroCard | Card, selectedCards: Card[] | undefined): true | void => {
+    const selectedCard = _.first(selectedCards);
+    const canAdd = selectedCard && selectedCard.suit === card.suit && card.value === selectedCard.value - 1;
+    if (canAdd) {
+      const newStateWithoutSelected = this.getStateWithoutSelectedCard(selectedCards);
+      const newState = {
+        ...newStateWithoutSelected,
+        suitStacks: {
+          ...newStateWithoutSelected.suitStacks,
+          [card.suit]: [...newStateWithoutSelected.suitStacks[card.suit] || [], ...selectedCards || []]
+        }
+      };
+      this.setState(newState);
+      return true;
+    }
+  }
+
+  onSuitStackClick = (card: ZeroCard | Card) => {
+    if (!this.maybeMoveToSuitStack(card, this.state.selectedCards)) {
+      this.selectCards(!isZeroCard(card) ? this.getNextSelectedCards([card]) : undefined);
+    }
+  }
+
+  autoMove = () => {
+    return SUITS.some((suit) => {
+      const topCard = _.last(this.state.suitStacks[suit]);
+      return topCard && this.maybeMoveToSuitStack(topCard, this.state.selectedCards);
+    }) || this.state.stacks.some((stack, i) => {
+      const topCard = _.last(stack.showing);
+      return topCard && this.maybeMoveToStack(i, topCard, this.state.selectedCards);
+    });
   }
 
   render() {
@@ -239,6 +270,7 @@ export class Game extends Component<IProps, IGameState> {
           </div>
           <RemainingDeck
             showing={this.state.showing}
+            facedown={this.state.facedown}
             next={this.next}
             onCardClick={this.onDeckCardClick}
             selectedCards={this.state.selectedCards}
@@ -247,11 +279,10 @@ export class Game extends Component<IProps, IGameState> {
         <div className="flex-row m-t-3">
           {this.state.stacks.map((stack, stackIndex) => (
             <div className="m-r-sub2" key={stackIndex}>
-              {stack.facedown.map((card, i) =>
-                <DownCard next={() => { }} key={getCardText(card)} style={{ marginTop: i !== 0 ? '-75px' : undefined }} />)}
-              {stack.showing.map((card, i) =>
+              {[...stack.facedown, ...stack.showing].map((card, i) =>
                 isSuperKingCard(card)
                   ? <div
+                    className="cursor-pointer"
                     key={card.value}
                     style={
                       CARD_SIZE
@@ -259,15 +290,15 @@ export class Game extends Component<IProps, IGameState> {
                     onClick={() => this.onStackClick(stackIndex, card)}
                   />
                   : <CardDisplay
-                    key={getCardText(card)}
+                    flipped={i < stack.facedown.length}
                     card={card}
-                    style={{ marginTop: i !== 0 ? '-60px' : stack.facedown.length ? '-75px' : undefined }}
-                    onClick={() => this.onStackClick(stackIndex, card)}
-                    onDoubleClick={() => this.dblClickSingle(card)}
+                    key={getCardText(card)}
                     selected={isSelected(card, this.state.selectedCards)}
-                  />
-              )}
+                    onClick={() => this.onStackClick(stackIndex, card)}
+                    style={{ marginTop: i !== 0 ? i <= stack.facedown.length ? '-75px' : '-60px' : undefined }}
+                  />)}
             </div>
+
           )
           )}
         </div>

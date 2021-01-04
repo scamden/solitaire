@@ -4,11 +4,12 @@ import * as React from 'react';
 import * as classnames from 'classnames';
 import { Card, getCardValueDisplay, getSuitSymbol, isZeroCard, Suit, ZeroCard } from '../../cards';
 
-import { cardBase, selected } from './style.scss';
+import { back, cardBase, cardContainer, inverted, selected } from './style.scss';
 
 export type IProps = SharedCardProps & {
   card: Card | ZeroCard;
   selected: boolean | undefined;
+  flipped?: boolean;
 };
 
 export const CARD_SIZE = {
@@ -21,10 +22,14 @@ const CARD_STYLE = {
   background: 'white',
   userSelect: 'none',
   boxShadow: 'rgba(0, 0, 0, 0.2) -2px 2px 8px 0px',
-  transform: 'translate3d(0, 0, 0)',
+  /* transform: 'translate3d(0, 0, 0)', */
 } as const;
 const CARD_VALUE_STYLE = { fontWeight: 'bold' } as const;
 const CARD_SUIT_STYLE = { fontSize: '35px' };
+const cardBackImageUrl = require('../../../assets/images/card-back-simple.jpg');
+/* const cardBackImageUrl = require('../../assets/images/card-back.png'); */
+
+const CARD_BACK_STYLE = { background: `url(${cardBackImageUrl})`, backgroundSize: 'cover', backgroundPositionX: 'center' };
 
 export type SharedCardProps = {
   onClick?: () => void;
@@ -52,23 +57,34 @@ export const CardContainer: React.FunctionComponent<CardContainerProps> = ({ sty
 export const BigSuit = ({ suit }: { suit: Suit }) => <div className="flex-x-center" style={CARD_SUIT_STYLE}>{getSuitSymbol(suit)}</div>;
 
 export const CardDisplay = (props: IProps) => {
-  const { card, style, className, ...rest } = props;
+  const { card, style, className, flipped, ...rest } = props;
   const suitSymbol = getSuitSymbol(card.suit);
   const color = card.suit === Suit.Hearts || card.suit === Suit.Diamonds ? 'red' : 'black';
   return (
-    <CardContainer
-      className={classnames(className, { [selected]: props.selected })}
-      style={{ ...style, color }}
-      {...rest}
+    <div
+      className={classnames('position-relative', className, { [inverted]: flipped }, cardContainer)}
+      style={{ ...style, opacity: isZeroCard(card) ? 0.5 : undefined }}
     >
-      <div className="flex-grow-1 flex-x-center flex-column flex-space-between">
-        {!isZeroCard(card) &&
-          <div className="flex-row flex-space-between">
-            <div style={CARD_VALUE_STYLE}>{getCardValueDisplay(card.value)}</div>
-            <div>{suitSymbol}</div>
-          </div>}
-        <BigSuit suit={card.suit} />
-      </div>
-    </CardContainer>
+      <CardContainer
+        style={CARD_BACK_STYLE}
+        className={classnames(back)}
+        {...rest}
+      />
+      <CardContainer
+        className={classnames({ [selected]: props.selected, })}
+        style={{ color, }}
+        {...rest}
+      >
+        <div className="flex-grow-1 flex-x-center flex-column flex-space-between">
+          {!isZeroCard(card) &&
+            <div className="flex-row flex-space-between">
+              <div style={CARD_VALUE_STYLE}>{getCardValueDisplay(card.value)}</div>
+              <div>{suitSymbol}</div>
+            </div>}
+          <BigSuit suit={card.suit} />
+        </div>
+      </CardContainer>
+
+    </div>
   );
 };

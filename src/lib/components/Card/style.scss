@@ -7,4 +7,24 @@
 
 .cardBase {
   border-width: 2px !important;
+  transform: translate3d(0, 0, 0);
+  
+}
+
+.cardContainer{
+  transition: all 0.5s;
+  transform-style: preserve-3d;
+  transform: rotate3d(0, 1, 0, 0deg) ;
+}
+
+.inverted {
+  transform: rotate3d(0, 1, 0, 180deg) ;
+  perspective: 600px;
+}
+
+.back {
+  position: absolute;
+  left : 0;
+  top : 0;
+  transform : translate3d(0, 0, -1px);
 }

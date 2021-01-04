@@ -79,7 +79,9 @@ export const getCardValueDisplay = (value: CardValue) => {
 
 export const getCardText = (card: Card) => `${getCardValueDisplay(card.value)}${getSuitSymbol(card.suit)}`;
 
-export const cardsEqual = (card1: AnyCard, card2: AnyCard) => card1.suit === card2.suit && card1.value === card2.value;
+export const cardsEqual = (card1: AnyCard | undefined, card2: AnyCard | undefined) =>
+  card1?.suit === card2?.suit && card1?.value === card2?.value
+  ;
 export const getCardColor = (card: AnyCard) => {
   switch (card.suit) {
     case Suit.Hearts: return `red`;
