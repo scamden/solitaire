@@ -21,7 +21,6 @@ const CARD_STYLE = {
   ...CARD_SIZE,
   background: 'white',
   userSelect: 'none',
-  boxShadow: 'rgba(0, 0, 0, 0.2) -2px 2px 8px 0px',
   /* transform: 'translate3d(0, 0, 0)', */
 } as const;
 const CARD_VALUE_STYLE = { fontWeight: 'bold' } as const;
@@ -63,7 +62,7 @@ export const CardDisplay = (props: IProps) => {
   return (
     <div
       className={classnames('position-relative', className, { [inverted]: flipped }, cardContainer)}
-      style={{ ...style, opacity: isZeroCard(card) ? 0.5 : undefined }}
+      style={{ boxShadow: 'rgba(0, 0, 0, 0.2) -2px 2px 8px 0px', ...style, opacity: isZeroCard(card) ? 0.5 : undefined, }}
     >
       <CardContainer
         style={CARD_BACK_STYLE}

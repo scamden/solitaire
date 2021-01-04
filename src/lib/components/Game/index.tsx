@@ -54,18 +54,30 @@ type DownCardProps = {
 
 const RemainingDeck: React.FunctionComponent<RemainingDeckProps> = ({ showing, facedown, next, onCardClick, selectedCards, }) => {
   const topFaceDown = _.last(facedown);
+  const allRenderedDeckCards = [...showing, ...facedown];
+  const renderedCards = allRenderedDeckCards.map((card, i) => {
+    const isTopFaceDown = cardsEqual(card, topFaceDown);
+    const isFacedown = i >= showing.length;
+    const lastShowing = i === showing.length - 1;
+    return (
+      <CardDisplay
+        card={card}
+        key={getCardText(card)}
+        style={{
+          marginLeft: (isFacedown) ? '-53px' : !isTopFaceDown ? '-30px' : undefined,
+          marginRight: (lastShowing) ? '64px' : undefined,
+          ...isFacedown && !isTopFaceDown && { boxShadow: 'none' }
+        }}
+        /* className={isTopFaceDown && 'm-l-sub2' || undefined} */
+        onClick={() => isTopFaceDown && next() || i === showing.length - 1 && onCardClick(card)}
+        selected={isSelected(card, selectedCards)}
+        flipped={isFacedown}
+      />
+    );
+  });
   return (
-    <div className="flex-row m-l-auto flex-shrink-0" style={{ transition: 'all 0.5s' }}>
-      {showing.map((card, i) => (
-        <CardDisplay
-          card={card}
-          key={getCardText(card)}
-          style={{ marginLeft: '-30px' }}
-          onClick={() => i === showing.length - 1 && onCardClick(card)}
-          selected={isSelected(card, selectedCards)}
-        />
-      ))}
-      {topFaceDown && <CardDisplay card={topFaceDown} onClick={next} className="m-l-sub2" selected={false} flipped={true} />}
+    <div className="flex-row m-l-auto flex-shrink-0" >
+      {renderedCards}
     </div>
   );
 };
